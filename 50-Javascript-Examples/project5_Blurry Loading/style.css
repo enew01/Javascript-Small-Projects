@@ -1,0 +1,31 @@
+  @import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&family=Julius+Sans+One&family=Orbitron:wght@400;500;600;700;800;900&family=Roboto:wght@400;700&family=Share+Tech&display=swap');
+
+  * {
+    box-sizing: border-box;
+  }
+body {
+    font-family: 'Ubuntu', sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    height: 100vh;
+}
+
+.bg {
+  background: url('https://evans-japan-trip.netlify.app/images/0-Tokyo-Downtown.jpg') no-repeat center/cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  filter:blur(0px)
+}
+
+.loading-text {
+  font-size: 50px;
+  color: white;
+}
