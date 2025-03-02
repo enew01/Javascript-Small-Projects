@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect 4</title>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; }
+        .board { display: grid; grid-template-columns: repeat(7, 60px); gap: 5px; width: max-content; margin: auto; }
+        .cell { width: 60px; height: 60px; background: #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .red { background: red; }
+        .yellow { background: yellow; }
+        button { margin-top: 20px; padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Connect 4</h1>
+    <div id="board" class="board"></div>
+    <h2 id="status">Player Red's Turn</h2>
+    <button onclick="resetGame()">Restart</button>
+    <script>
+        const ROWS = 6, COLS = 7;
+        let board = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
+        let currentPlayer = 'red';
+        let gameOver = false;
+        
+        const boardDiv = document.getElementById("board");
+        const statusDiv = document.getElementById("status");
+        
+        function createBoard() {
+            boardDiv.innerHTML = '';
+            for (let r = 0; r < ROWS; r++) {
+                for (let c = 0; c < COLS; c++) {
+                    const cell = document.createElement("div");
+                    cell.classList.add("cell");
+                    cell.dataset.row = r;
+                    cell.dataset.col = c;
+                    cell.addEventListener("click", () => dropDisc(c));
+                    boardDiv.appendChild(cell);
+                }
+            }
+        }
+        
+        function dropDisc(col) {
+            if (gameOver) return;
+            for (let r = ROWS - 1; r >= 0; r--) {
+                if (!board[r][col]) {
+                    board[r][col] = currentPlayer;
+                    updateBoard();
+                    if (checkWin(r, col)) {
+                        statusDiv.textContent = `Player ${currentPlayer.toUpperCase()} Wins!`;
+                        gameOver = true;
+                    } else {
+                        currentPlayer = currentPlayer === 'red' ? 'yellow' : 'red';
+                        statusDiv.textContent = `Player ${currentPlayer.toUpperCase()}'s Turn`;
+                    }
+                    return;
+                }
+            }
+        }
+        
+        function updateBoard() {
+            document.querySelectorAll(".cell").forEach(cell => {
+                let r = cell.dataset.row, c = cell.dataset.col;
+                cell.className = "cell";
+                if (board[r][c]) cell.classList.add(board[r][c]);
+            });
+        }
+        
+        function checkWin(r, c) {
+            const directions = [[0,1], [1,0], [1,1], [1,-1]];
+            for (let [dr, dc] of directions) {
+                let count = 1 + countInDirection(r, c, dr, dc) + countInDirection(r, c, -dr, -dc);
+                if (count >= 4) return true;
+            }
+            return false;
+        }
+        
+        function countInDirection(r, c, dr, dc) {
+            let count = 0;
+            let color = board[r][c];
+            while (true) {
+                r += dr;
+                c += dc;
+                if (r < 0 || r >= ROWS || c < 0 || c >= COLS || board[r][c] !== color) break;
+                count++;
+            }
+            return count;
+        }
+        
+        function resetGame() {
+            board = Array.from({ length: ROWS }, () => Array(COLS).fill(null));
+            currentPlayer = 'red';
+            gameOver = false;
+            statusDiv.textContent = "Player Red's Turn";
+            updateBoard();
+        }
+        
+        createBoard();
+    </script>
+</body>
+</html>
